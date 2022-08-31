@@ -7,12 +7,12 @@
 <!-- badges: end -->
 
 * Installation
-Please install it through package manager. 
+
 ```
 library(devtools)
 devtools::install_github("jienagu/dataMojo")
 ```
-
+Note: on its way to CRAN
 
 Built on the top of data.table, `dataMojo` is a grammar of data
 manipulation with data.table, providing a consistent a series of utility
