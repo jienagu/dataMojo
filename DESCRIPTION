@@ -1,0 +1,29 @@
+Package: dataMojo
+Title: reshape data table
+Version: 0.1.1
+Authors@R: 
+  c(person(given = "Jiena",
+           family = "McLellan",
+           role = c("aut", "cre"),
+           email = "jienagu90@gmail.com",
+           comment = c(ORCID = "0000-0002-5578-088X")),
+    person(given = "Michael",
+           family = "Condouris",
+           role = "ctb",
+           comment = c(ORCID = "0000-0002-8862-4250")),
+    person(given = "Brittney",
+           family = "Zykan",
+           role = "ctb")
+           )
+Description: reshape data table
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+License: MIT + file LICENSE
+Imports:
+    data.table
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1

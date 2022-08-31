@@ -1,0 +1,286 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# dataMojo
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Built on the top of data.table, `dataMojo` is a grammar of data manipulation with data.table, providing a consistent a series of utility functions that help you solve the most common data manipulation challenges:
+
+* Calculate the row wise percentage
+* Calculate the survey type percentage table
+* Calculate the column wise percentage with desired numerator and denominator 
+* Select columns
+* Split one column to multiple columns based on patterns
+* Filter cases based on their values
+* Fill missing values
+* Summarize and reduces multiple values down to a single summary
+* Reshape `long to wide` or `wide to long`
+
+## Calculate the row wise percentage
+
+Calculate the row wise percentage of a frequency table
+
+```{r row}
+library(dataMojo)
+library(data.table)
+test_df <- data.frame(
+      Group = c("A", "B", "C"),
+      Female = c(2,3,5),
+      Male = c(10,11, 13)
+    )
+print(test_df)
+dataMojo::row_percent_convert(test_df, cols_rowsum = c("Female", "Male"))
+```
+
+## Calculate the survey type percentage table for *single* question
+
+```{r survey1}
+library(dataMojo)
+library(data.table)
+   test_dt <- data.table::data.table(
+      Question = c(rep("Good", 3), rep("OK", 3), rep("Bad", 3)),
+      Gender = c(rep("F", 4), rep("M", 5))
+    )
+   print(test_dt)
+   dataMojo::pivot_percent_at(test_dt, 
+                                 question_col = "Question", aggregated_by_cols = "Gender")
+```
+
+## Calcuate the survey type percentage table for *multiple* question
+
+```{r survey2}
+library(dataMojo)
+library(data.table)
+test_dt <- data.table(
+      Question1 = c(rep("Good", 3), rep("OK", 3), rep("Bad", 3)),
+      Question2 = c(rep("Good", 2), rep("OK", 2), rep("Bad", 5)),
+      Gender = c(rep("F", 4), rep("M", 5))
+    )
+print(test_dt)
+dataMojo::pivot_percent_at_multi(test_dt, 
+                                    question_col = c("Question1","Question2") , aggregated_by_cols = "Gender") 
+```
+
+## Calculate the column wise percentage with desired numerator and denominator 
+
+This function is to calculate column-wise percentage in a new column with desired numerator columns and denominator columns. If denominator is 0, the percentage will be `N/A`. 
+
+```{r col_wise_percentage}
+library(dataMojo)
+test_df <- data.frame(
+      hc1 = c(2, 0, 1, 5, 6, 7, 10),
+      hc2 = c(1, 0, 10, 12, 4, 1, 9 ),
+      total = c(10, 2, 0, 39, 23, 27, 30)
+    )
+print(test_df)
+dataMojo::col_cal_percent(test_df, 
+                          new_col_name = "hc_percentage", 
+                          numerator_cols = c("hc1", "hc2"), 
+                          denominator_cols = "total"
+                          ) 
+```
+
+## Select columns
+Select variables in a data table. You can also use predicate functions like is.numeric to select variables based on their properties (e.g. 1:3 selects the first column to the third column).
+
+```{r ex1}
+library(dataMojo)
+library(data.table)
+data("dt_dates")
+dt_dates <- setDT(dt_dates)
+dataMojo::select_cols(dt_dates, c("Start_Date", "Full_name"))
+```
+
+
+## Split a column
+Split a column with its special pattern, and assign to multiple columns respectively. For example, split full name column to first name and last name column. 
+
+```{r ex2}
+data("dt_dates")
+library(data.table)
+data("dt_dates")
+dataMojo::str_split_col(dt_dates,
+              by_col = "Full_name",
+              by_pattern = ", ",
+              match_to_names = c("First Name", "Last Name"))
+```
+
+
+## Filter cases based on values
+
+`filter_all()` is to return a data table with **ALL** columns (greater than/ less than/ equal to) a desired value. 
+
+```{r ex3}
+data("dt_values")
+dataMojo::filter_all(dt_values, operator = "l", .2)
+```
+
+`filter_any()` is to return a data table with **ANY** columns (greater than/ less than/ equal to) a desired value. 
+
+
+```{r ex4}
+data("dt_values")
+dataMojo::filter_any(dt_values, operator = "l", .1)
+```
+
+Similarly, `filter_all_at()` is to return a data table with **ALL selected** columns (greater than/ less than/ equal to) a desired value. 
+
+```{r ex5}
+data("dt_values")
+dataMojo::filter_all_at(dt_values, operator = "l", .1, c("A1", "A2"))
+```
+
+Similarly, `filter_any_at()` is to return a data table with **ANY selected** columns (greater than/ less than/ equal to) a desired value. 
+
+
+```{r ex6}
+data("dt_values")
+dataMojo::filter_any_at(dt_values, operator = "l", .1, c("A1", "A2"))
+```
+
+## Fill missing values
+
+`fill_NA_with()` will fill NA value with a desired value in the selected columns. If `fill_cols` is `All` (same columns type), it will apply to the whole data table.
+
+```{r ex7}
+data("dt_missing")
+dataMojo::fill_NA_with(dt_missing, fill_cols = c("Full_name"), fill_value = "pending")
+```
+
+## Group by and summarize
+
+`dt_group_by()` is to group by desired columns and summarize rows within groups. 
+
+
+```{r ex8}
+data("dt_groups")
+print(head(dt_groups))
+```
+
+Now we see the `dt_groups` data table has A1, A2 as numeric columns, and group1, group2 as group infomation. 
+
+```{r ex9}
+data("dt_groups")
+dataMojo::dt_group_by(dt_groups, 
+            group_by_cols = c("group1", "group2"), 
+            summarize_at = "A1", 
+            operation = "mean")
+```
+
+Now we want to group by group1 and group2, then fetch the first within each group, we can use `get_row_group_by()` function. 
+
+```{r ex10}
+data("dt_groups")
+dataMojo::get_row_group_by(dt_groups, 
+                 group_by_cols = c("group1", "group2"), 
+                 fetch_row = "first")
+```
+
+or last row with same example. 
+
+```{r ex11}
+data("dt_groups")
+dataMojo::get_row_group_by(dt_groups, 
+                 group_by_cols = c("group1", "group2"), 
+                 fetch_row = "last")
+```
+
+#### Comparison of dataMojo VS dplyr
+```{r comp, message=FALSE}
+set.seed(42)
+test_dt <- data.table(
+  A1 = runif(100000),
+  B  = rep(1:1000,100),
+  C  = rep(1:10,10000)
+)
+
+test_df <- data.frame(test_dt)
+library(dplyr)
+dataMojo_test <- function(){
+  dataMojo::dt_group_by(test_dt, 
+                       group_by_cols = c("B", "C"), 
+                       summarize_at = "A1", 
+                       operation = "mean")
+}
+
+dplyr_test <- function(){
+  test_df %>% 
+    dplyr::group_by(B, C) %>% 
+    dplyr::summarise(A1= mean(A1))
+}
+
+library(microbenchmark)
+library(ggplot2)
+res_group <- microbenchmark(dataMojo_test(), dplyr_test(), times=100)
+print(res_group)
+ggplot2::autoplot(res_group)
+
+```
+
+
+## Reshape `long to wide` or `wide to long`
+
+Here is an example of reshaping a data table from wide to long. 
+
+```{r ex12}
+data("dt_dates")
+print(head(dt_dates))
+dataMojo::reshape_longer(dt_dates, 
+               keep_cols = "Full_name", 
+               by_pattern = "Date", 
+               label_cols = c("Date_Type"), 
+               value_cols = "Exact_date", 
+               fill_NA_with = NULL)
+```
+
+Here is an example of reshaping a data table from long to wide. 
+
+```{r ex13}
+data("dt_long")
+print(head(dt_long))
+dataMojo::reshape_wider(dt_long, 
+              keep_cols = c("Full_name"), 
+              col_lable = c("Date_Type"), 
+              col_value = "Exact_date")
+```
+
+## Advanced Topic: expand row based on pattern
+
+`row_expand_pattern()` is to expand rows based on a desired column. 
+
+```{r ex14}
+data("starwars_simple")
+starwars_simple[]
+row_expand_pattern(starwars_simple, "films", ", ", "film")[]
+```
+
+
+## Advanced Topic: expand row given start and end dates
+
+`row_expand_dates()` is to expand rows to each date given start and end dates. 
+
+```{r ex15}
+dt_dates_simple <- data.table(
+  Start_Date = as.Date(c("2020-02-03", "2020-03-01") ),
+  End_Date = as.Date(c("2020-02-05", "2020-03-02") ),
+  group = c("A", "B")
+)
+dt_dates_simple[]
+row_expand_dates(dt_dates_simple, "Start_Date", "End_Date", "Date")[]
+
+```
+
