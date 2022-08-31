@@ -9,7 +9,8 @@
 * Installation
 Please install it through package manager. 
 ```
-install.packages("dataMojo")
+library(devtools)
+devtools::install_github("jienagu/dataMojo")
 ```
 
 
