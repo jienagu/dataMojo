@@ -30,6 +30,8 @@ challenges:
 -   Summarize and reduces multiple values down to a single summary
 -   Reshape `long to wide` or `wide to long`
 
+Here is a demo app using dataMojo: https://github.com/jienagu/demo_mojo_app
+
 ## Calculate the row wise percentage
 
 Calculate the row wise percentage of a frequency table
