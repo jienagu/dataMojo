@@ -13,6 +13,9 @@ Authors@R:
            comment = c(ORCID = "0000-0002-8862-4250")),
     person(given = "Brittney",
            family = "Zykan",
+           role = "ctb"),
+    person(given = "Sai",
+           family = "Im",
            role = "ctb")
            )
 Description: reshape data table
