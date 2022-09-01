@@ -92,7 +92,7 @@ library(data.table)
 ``` r
 library(dataMojo)
 library(data.table)
-test_dt <- data.table(
+test_dt <- data.table::data.table(
       Question1 = c(rep("Good", 3), rep("OK", 3), rep("Bad", 3)),
       Question2 = c(rep("Good", 2), rep("OK", 2), rep("Bad", 5)),
       Gender = c(rep("F", 4), rep("M", 5))
