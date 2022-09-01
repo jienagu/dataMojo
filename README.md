@@ -1,10 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dataMojo
+# dataMojo  <img src="dataMojo.png"  width="180px" align="right"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+
 
 * Installation
 
