@@ -4,6 +4,8 @@
 # dataMojo  <img src="dataMojo.png"  width="180px" align="right"/>
 
 <!-- badges: start -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/dataMojo)](https://cran.r-project.org/package=dataMojo)
+[![Download](https://cranlogs.r-pkg.org/badges/grand-total/dataMojo)](https://cranlogs.r-pkg.org/badges/grand-total/dataMojo)
 <!-- badges: end -->
 
 
