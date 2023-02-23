@@ -9,10 +9,12 @@
 
 
 * Installation
+
 CRAN:
 ```
 install.packages("dataMojo")
 ```
+Or developing version:
 
 ```
 library(devtools)
